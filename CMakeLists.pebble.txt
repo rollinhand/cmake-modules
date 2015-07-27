@@ -1,0 +1,18 @@
+# Author: Björn Berg, bjoern.berg@gmx.de
+# Date: 2015-07-27
+
+# minimum version of cmake required to build this project
+cmake_minimum_required(VERSION 2.6)
+
+# The projects name and the language type.
+# The C is important. Otherwise the indexer in Eclipse will have problems to resolve
+# dependencies from some header files.
+project(pebble C)
+
+# Load our modules for this project
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
+find_package(Pebble)
+if (PEBBLE_FOUND)
+	include_directories(${PEBBLE_INCLUDE_DIR})
+endif(PEBBLE_FOUND)
