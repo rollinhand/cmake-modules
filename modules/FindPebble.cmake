@@ -34,31 +34,47 @@ else (DEFINED PEBBLE_ROOT_DIR)
 	message(FATAL_ERROR "Please set PEBBLE_ROOT_DIR to the Pebble SDK installation path.")
 	set (PEBBLE_FOUND false)
 endif (DEFINED PEBBLE_ROOT_DIR)
-
+set (PEBBLE_PHONE "192.168.0.52" CACHE STRING "Pebble IP address")
 		  
 if (DEFINED PEBBLE_INCLUDE_DIR)
 	set (PEBBLE_PROGRAM ${PEBBLE_ROOT_DIR}/bin/pebble)
 	
 	# Add some pebble specific targets to the build
 	# pebble-build is always executed when target 'all' is called
-	add_custom_target(pebble-build ALL ${PEBBLE_PROGRAM} build)
+	add_custom_target(pebble-build
+			ALL ${PEBBLE_PROGRAM} build
+			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 	
 	# pebble-clean depends on clean 
-	add_custom_target(pebble-clean ${PEBBLE_PROGRAM} clean)
-	
+	add_custom_target(pebble-clean ${PEBBLE_PROGRAM} clean
+			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
+	add_custom_target(pebble-emulate-aplite
+			${PEBBLE_PROGRAM} install --emulator aplite ${PROJECT_SOURCE_DIR}/build/${CMAKE_PROJECT_NAME}.pbw
+			DEPENDS pebble-build
+			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
+	add_custom_target(pebble-emulate-basalt
+			${PEBBLE_PROGRAM} install --emulator basalt ${PROJECT_SOURCE_DIR}/build/${CMAKE_PROJECT_NAME}.pbw
+			DEPENDS pebble-build
+			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
+	add_custom_target(pebble-emulate-chalk
+			${PEBBLE_PROGRAM} install --emulator chalk ${PROJECT_SOURCE_DIR}/build/${CMAKE_PROJECT_NAME}.pbw
+			DEPENDS pebble-build
+			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
 	# pebble-install installs app and starts logging
 	# pebble-emulate starts the emulator
-	if (DEFINED ENV{PEBBLE_PHONE})
-		add_custom_target(pebble-install 
-					  ${PEBBLE_PROGRAM} install --logs --phone=$ENV{PEBBLE_PHONE})
-		add_custom_target(pebble-emulate 
-					  ${PEBBLE_PROGRAM} install --emulator basalt ${CMAKE_SOURCE_DIR}/build/${CMAKE_PROJECT_NAME}.pbw 
-					  DEPENDS pebble-build)
-	else (DEFINED ENV{PEBBLE_PHONE})
+	if (DEFINED PEBBLE_PHONE)
+		add_custom_target(pebble-install
+				      ${PEBBLE_PROGRAM} install --logs --phone=${PEBBLE_PHONE}
+					  DEPENDS pebble-build
+					  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+	else (DEFINED PEBBLE_PHONE)
 		message(STATUS "Environment variable PEBBLE_PHONE not found.")
 		message(STATUS "target 'pebble-install' not added.")
-		message(STATUS "target 'pebble-emulate' not added.")
-	endif (DEFINED ENV{PEBBLE_PHONE})	
+	endif (DEFINED PEBBLE_PHONE)
 	
 	set (PEBBLE_FOUND true)
 endif (DEFINED PEBBLE_INCLUDE_DIR)	
@@ -67,4 +83,3 @@ endif (DEFINED PEBBLE_INCLUDE_DIR)
 mark_as_advanced (PEBBLE_INCLUDE_DIR)
 
 
-	
