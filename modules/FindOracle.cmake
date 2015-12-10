@@ -9,7 +9,10 @@
 # ORACLE_INCLUDE_DIR = where to find the library headers also defined,
 #                       but not for general use are
 #
-# Copyright (c) 2015 Björn Berg, bjoern.berg@gmx.de
+# Copyright (c) 2015 Björn Berg, bjoern.berg@numetris.de
+#
+# Developed with inspiration from Petr Vanek <petr@scribus.info>
+# who wrote similar macro for TOra - http://torasql.com/
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
